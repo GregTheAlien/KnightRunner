@@ -8,53 +8,46 @@ public class PlayerController : MonoBehaviour
 {
 
     Rigidbody2D rb;
+    Animator anim;
     public float amountOfForce;
-    //int score;
-    string level;
-    public Text scoreText;
-    public Text highScoreText;
+    bool onGround;
+    //string level;
 
-    public Sprite neutral, falling, rising;
-    SpriteRenderer sr;
     // Start is called before the first frame update
     void Start()
     {
-        sr = GetComponent<SpriteRenderer>();
-        sr.sprite = neutral;
+
         rb = GetComponent<Rigidbody2D>();
-        print("Score: " + GlobalVar.score);
-        scoreText.text = GlobalVar.score.ToString();
-        GlobalVar.GetScore();
-        highScoreText.text = GlobalVar.highScore.ToString();
+        anim = GetComponent<Animator>();
+        //scoreText.text = GlobalVar.score.ToString();
+        //GlobalVar.GetScore();
+        //highScoreText.text = GlobalVar.highScore.ToString();
 
     }
 
     // Update is called once per frame
     void Update()
     {
-        Anim();
-        if(Input.GetMouseButtonDown(0))
+        //Anim();
+        if(Input.GetMouseButtonDown(0) && onGround)
         {
+            onGround = false;
+            anim.SetBool("jumping", true);
+            rb.velocity = Vector2.zero;
             rb.AddForce(Vector2.up * amountOfForce, ForceMode2D.Impulse);
         }
     }
 
-    void OnTriggerExit2D(Collider2D other)
-    {
-        PipeController pc;
-        pc = other.GetComponent<PipeController>();
-        GlobalVar.score += pc.points;
-        print("Score: " + GlobalVar.score);
-        scoreText.text = GlobalVar.score.ToString();
-        CheckScore();
-    }
 
     void OnCollisionEnter2D(Collision2D collision)
     {
-        CheckScore();
-        EndGame();
+        onGround = true;
+        anim.SetBool("jumping", false);
+        //CheckScore();
+        //EndGame();
     }
 
+    /*
     void CheckScore()
     {
         if(GlobalVar.score > GlobalVar.highScore)
@@ -85,4 +78,5 @@ public class PlayerController : MonoBehaviour
         else
             sr.sprite = neutral;
     }
+    */
 }
